@@ -1,0 +1,408 @@
+<%layout("/layouts/boilerplate.ejs")%>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
+
+<body>
+
+<style>
+    #filters{
+        display : flex;
+        flex-wrap: nowrap;         
+        overflow-x: auto;        
+        -webkit-overflow-scrolling: touch;
+        padding-bottom: 10px;      
+    }
+
+    #filters::-webkit-scrollbar {
+        display: none; 
+    }
+
+    .filter{
+        text-align : center;
+        text-decoration : none;
+        color : inherit;
+        margin-right : 2rem;
+        margin-top : 2rem;
+        opacity : 0.7;
+        transition: opacity 0.25s ease-in-out, transform 0.25s ease-in-out;
+    }
+
+    .filter:hover{
+        opacity : 1;
+        cursor : pointer;
+        transition : 0.3s;
+        transform: translateY(-2px);
+    }
+
+    .filter p{
+        font-size : 0.8rem;
+    }
+
+    .filter.active.p{
+        font-weight :700;
+        color : #ff385c;
+    }
+
+    .filter.active{
+        opacity : 1 ;
+    }
+
+    .filters-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+    }
+
+    .filters-row #filters {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .view-toggle-row {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.7rem;
+        flex-shrink: 0;
+        margin-top: 0;
+        margin-bottom: 0;
+        margin-left: 1.5rem;
+        padding : 0.55rem 1rem;
+        border : 1px solid #e8e8e8;
+        border-radius : 50px;
+        background-color : #fff;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        transition: box-shadow 0.25s ease, border-color 0.25s ease;
+    }
+
+    .view-toggle-row:hover {
+        box-shadow: 0 4px 14px rgba(0,0,0,0.1);
+        border-color: #ddd;
+    }
+
+    .view-toggle-label {
+        font-size: 0.88rem;
+        font-weight: 600;
+        color: #222;
+        letter-spacing: 0.1px;
+        white-space: nowrap;
+    }
+
+    .view-toggle-switch {
+        position: relative;
+        display: inline-block;
+        width: 50px;
+        height: 26px;
+    }
+
+    .view-toggle-switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+    .toggle-track {
+        position: absolute;
+        cursor: pointer;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background-color: #e0e0e0;
+        transition: background-color 0.35s ease;
+        border-radius: 26px;
+        box-shadow: inset 0 1px 3px rgba(0,0,0,0.15);
+    }
+
+    .toggle-track::before {
+        position: absolute;
+        content: "";
+        height: 20px;
+        width: 20px;
+        left: 3px;
+        bottom: 3px;
+        background-color: white;
+        transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        border-radius: 50%;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.3), 0 0 0 1px rgba(0,0,0,0.02);
+    }
+
+    .view-toggle-switch input:checked + .toggle-track {
+        background-color: #fe424d;
+    }
+
+    .view-toggle-switch input:checked + .toggle-track::before {
+        transform: translateX(24px);
+    }
+
+    #list-view, #map-view {
+        transition: opacity 0.35s ease, transform 0.35s ease;
+    }
+
+    #list-view.view-hidden, #map-view.view-hidden {
+        opacity: 0;
+        transform: translateY(8px);
+        pointer-events: none;
+    }
+
+    #map-view {
+        display: none;
+        margin-top: 1.2rem;
+    }
+
+    .map-card {
+        background: #fff;
+        border-radius: 1.2rem;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+        border: 1px solid #eee;
+        overflow: hidden;
+        padding: 1.2rem 1.2rem 0 1.2rem;
+    }
+
+    .map-card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 1rem;
+        padding: 0 0.3rem;
+    }
+
+    .map-card-header h5 {
+        font-weight: 700;
+        font-size: 1.05rem;
+        margin: 0 0 2px 0;
+        color: #222;
+    }
+
+    .map-card-header p {
+        font-size: 0.82rem;
+        color: #777;
+        margin: 0;
+    }
+
+    .map-card-count {
+        background: #fff2f2;
+        color: #fe424d;
+        font-size: 0.78rem;
+        font-weight: 700;
+        padding: 4px 12px;
+        border-radius: 20px;
+        white-space: nowrap;
+    }
+
+    #listings-map {
+        height: 65vh;
+        width: 100%;
+        border-radius: 0.9rem 0.9rem 0 0;
+    }
+
+    .price-marker {
+        background: #222;
+        color: #fff;
+        padding: 5px 12px;
+        border-radius: 16px;
+        font-weight: 600;
+        font-size: 12.5px;
+        white-space: nowrap;
+        border: 2px solid #fff;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.35);
+        transition: transform 0.2s ease;
+    }
+
+    .price-marker:hover {
+        transform: scale(1.08);
+    }
+
+    .leaflet-popup-content-wrapper {
+        border-radius: 14px;
+        box-shadow: 0 6px 20px rgba(0,0,0,0.18);
+        padding: 2px;
+    }
+
+    .leaflet-popup-content {
+        margin: 12px 14px;
+    }
+
+    .leaflet-popup-tip {
+        box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    }
+
+    .listing-popup-title {
+        font-weight: 700;
+        font-size: 0.95rem;
+        color: #222;
+        margin: 0 0 4px 0;
+    }
+
+    .listing-popup-price {
+        font-size: 0.85rem;
+        color: #444;
+        margin: 0 0 10px 0;
+    }
+
+    .listing-popup-price span {
+        font-weight: 400;
+        color: #888;
+    }
+
+    .listing-popup-btn {
+        display: inline-block;
+        background-color: #fe424d;
+        color: #fff !important;
+        text-decoration: none !important;
+        font-size: 0.8rem;
+        font-weight: 600;
+        padding: 6px 14px;
+        border-radius: 8px;
+        transition: background-color 0.2s ease;
+    }
+
+    .listing-popup-btn:hover {
+        background-color: #e11d2e;
+    }
+</style>
+    <div class="filters-row">
+        <div id="filters">
+            <a href="/listings" class="filter <%= !currentCategory ? 'active' : '' %>">
+                <div><i class="fa-solid fa-border-all"></i></div>
+                <p>All</p>
+            </a>
+            <a href="/listings?category=trending" class="filter <%= currentCategory === 'trending' ? 'active' : '' %>">
+                <div><i class="fa-solid fa-fire"></i></div>
+                <p>Trending</p>
+            </a>
+            <a href="/listings?category=rooms" class="filter <%= currentCategory === 'rooms' ? 'active' : '' %>">
+                <div><i class="fa-solid fa-bed"></i></div>
+                <p>Rooms</p>
+            </a>
+            <a href="/listings?category=iconic cities" class="filter <%= currentCategory === 'iconic cities' ? 'active' : '' %>">
+                <div><i class="fa-solid fa-mountain-city"></i></div>
+                <p>Iconic Cities</p>
+            </a>
+            <a href="/listings?category=mountains" class="filter <%= currentCategory === 'mountains' ? 'active' : '' %>">
+                <div><i class="fa-solid fa-mountain"></i></div>
+                <p>Mountains</p>
+            </a>
+            <a href="/listings?category=castles" class="filter <%= currentCategory === 'castles' ? 'active' : '' %>">
+                <div><i class="fa-brands fa-fort-awesome"></i></div>
+                <p>Castles</p>
+            </a>
+            <a href="/listings?category=pools" class="filter <%= currentCategory === 'pools' ? 'active' : '' %>">
+                <div><i class="fa-solid fa-person-swimming"></i></div>
+                <p>Pools</p>
+            </a>
+            <a href="/listings?category=camping" class="filter <%= currentCategory === 'camping' ? 'active' : '' %>">
+                <div><i class="fa-solid fa-tent"></i></div>
+                <p>Camping</p>
+            </a>
+            <a href="/listings?category=farms" class="filter <%= currentCategory === 'farms' ? 'active' : '' %>">
+                <div><i class="fa-solid fa-tractor"></i></div>
+                <p>farms</p>
+            </a>
+            <a href="/listings?category=snow" class="filter <%= currentCategory === 'snow' ? 'active' : '' %>">
+                <div><i class="fa-solid fa-snowflake"></i></div>
+                <p>Snow</p>
+            </a>
+            <a href="/listings?category=beach" class="filter <%= currentCategory === 'beach' ? 'active' : '' %>">
+                <div><i class="fa-solid fa-umbrella-beach"></i></div>
+                <p>Beach</p>
+            </a>
+            <a href="/listings?category=luxurious" class="filter <%= currentCategory === 'luxurious' ? 'active' : '' %>">
+                <div><i class="fa-solid fa-gem"></i></div>
+                <p>Luxurious</p>
+            </a>
+            <a href="/listings?category=treehouses" class="filter <%= currentCategory === 'treehouses' ? 'active' : '' %>">
+                <div><i class="fa-solid fa-tree"></i></div>
+                <p>Treehouses</p>
+            </a>
+            <a href="/listings?category=lakefront" class="filter <%= currentCategory === 'lakefront' ? 'active' : '' %>">
+                <div><i class="fa-solid fa-water"></i></div>
+                <p>Lakefront</p>
+            </a>
+            <a href="/listings?category=islands" class="filter <%= currentCategory === 'islands' ? 'active' : '' %>">
+                <div><i class="fa-solid fa-sailboat"></i></div>
+                <p>Islands</p>
+            </a>
+        </div>
+
+        <div class="view-toggle-row">
+            <span class="view-toggle-label">Map view</span>
+            <label class="view-toggle-switch">
+                <input type="checkbox" id="mapToggle">
+                <span class="toggle-track"></span>
+            </label>
+        </div>
+    </div>    
+
+    <div id="list-view">
+        <div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1 mt-3">
+            <%for(let listing of allListings){%>
+                <a href="/listings/<%=listing._id%>" class="listing-link">
+                <div class="card col listing-card">
+                    <img src="<%=listing.image.url%>" class="card-img-top" alt="lisitng image" style="height: 20rem; object-fit: cover;">
+                    <div class="card-img-overlay"></div>
+                    <div class="card-body">
+                        <p class="card-text">
+                        <b><%=listing.title%></b> <br>
+                        &#8377;<%= listing.price?.toLocaleString("en-IN") %> / night
+                        </p>
+                    </div>
+                </div>
+                </a>
+            <%}%>
+        </div>
+    </div>
+
+    <div id="map-view">
+        <div class="map-card">
+            <div class="map-card-header">
+                <div>
+                    <h5>Explore on the map</h5>
+                    <p>Click any price bubble to preview a listing</p>
+                </div>
+                <span class="map-card-count"><%= mapListings.length %> stays</span>
+            </div>
+            <div id="listings-map"></div>
+        </div>
+    </div>
+
+</body>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+<script>
+    const mapListings = <%- JSON.stringify(mapListings) %>;
+
+    const mapToggle = document.getElementById("mapToggle");
+    const listView = document.getElementById("list-view");
+    const mapView = document.getElementById("map-view");
+    let mapInitialized = false;
+
+    function crossfade(showEl, hideEl, afterShow) {
+        hideEl.classList.add("view-hidden");
+        setTimeout(() => {
+            hideEl.style.display = "none";
+            showEl.style.display = "block";
+            requestAnimationFrame(() => {
+                showEl.classList.remove("view-hidden");
+                if (afterShow) afterShow();
+            });
+        }, 350);
+    }
+
+    mapToggle.addEventListener("change", () => {
+        if (mapToggle.checked) {
+            crossfade(mapView, listView, () => {
+                if (!mapInitialized) {
+                    initListingsMap();
+                    mapInitialized = true;
+                } else {
+                    window.listingsMapInstance.invalidateSize();
+                }
+            });
+        } else {
+            crossfade(listView, mapView);
+        }
+    });
+</script>
+<script src="/js/indexMap.js"></script>
