@@ -20,6 +20,7 @@
                 <p class="card-text">Owned by <i><%=listing.owner.username%></i> <br></p>
                 <p class="card-text"></p><%=listing.description%> <br></p>
                 <p class="card-text"></p>&#8377; <%=listing.price.toLocaleString("en-IN")%>/night<br></p>
+                <p class="listing-address"><i class="fa-solid fa-location-dot"></i> <%= listing.address %></p>
                 <p class="card-text"></p><%=listing.location%> <br></p>
                 <p class="card-text"></p><%=listing.country%></p>
             </div>
@@ -38,14 +39,31 @@
        <%}%>
        <hr>
 
-       <% if (listing.geometry && listing.geometry.coordinates && listing.geometry.coordinates.length === 2) { %>
-       <div class="row mt-3 mb-4">
-           <div class="col-8 offset-3">
-               <h4>Where you'll be</h4>
-               <div id="map" style="height: 400px; border-radius: 10px;"></div>
-           </div>
-       </div>
-       <% } %>
+<% if (listing.geometry && listing.geometry.coordinates && listing.geometry.coordinates.length === 2) { %>
+ <div class="row mt-3 mb-4">
+     <div class="col-6 offset-3 map-section">
+         <h4 class="map-heading">Where you'll be</h4>
+         <div id="map"></div>
+         
+         <% 
+           // If address exists, search directly by place name/address string.
+           // Otherwise fall back to [latitude, longitude] coordinates.
+           const mapsQuery = listing.address 
+             ? encodeURIComponent(`${listing.title}, ${listing.address}`)
+             : `${listing.geometry.coordinates[1]},${listing.geometry.coordinates[0]}`;
+         %>
+
+         <a
+             href="https://www.google.com/maps/search/?api=1&query=<%= mapsQuery %>"
+             target="_blank"
+             rel="noopener noreferrer"
+             class="btn-directions"
+         >
+             <i class="fa-solid fa-diamond-turn-right"></i> Open in Google Maps
+         </a>
+     </div>
+ </div>
+ <% } %>
  
 
         <div class="col-8 offset-3">

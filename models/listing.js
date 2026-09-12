@@ -26,6 +26,9 @@ const ListingSchema = new  Schema({
     },
     price :  Number,
     location : String,
+    address: {
+        type: String,
+    },
     country : String,
     
     geometry: {

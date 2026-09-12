@@ -91,37 +91,10 @@ app.use((req,res,next) => {
 });
 
 
-// app.get("/demouser" ,async (req,res) => {
-//     fakeUser = new User ({
-//         email : "student@gmail.com",
-//         username : "demo-student",
-//     });
-
-
-//     let registeredUser = await User.register(fakeUser,"myPassword");
-//     res.send(registeredUser);
-// });
-
 app.use("/listings" , listingRouter);
 app.use("/listings/:id/reviews", reviewRouter);
 app.use("/", usersRouter);
 
-
-
-
-
-// app.get("/testListing" ,async (req,res) => {
-//     let sampleListing = new Listing ({
-//         title : "My New Villa",
-//         description : "By the beach",
-//         price : 1200,
-//         location : "calangute , Goa",
-//         country : "India",
-//     });
-//     await sampleListing.save();
-//     console.log("sample was saved");
-//     res.send("successful testing");
-// });
 
 app.all("*",(req,res,next) =>{
     next(new ExpressError(404,"Page not found"));

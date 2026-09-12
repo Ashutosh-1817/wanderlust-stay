@@ -40,12 +40,18 @@
             <div class="invalid-feedback">Country should be valid</div>
         </div>
         </div>
+
+        <div class="mb-3">
+            <label for="address" class="form-label">Exact Address (optional)</label>
+            <input type="text" name="listing[address]" id="address" class="form-control" value="<%= listing.address %>">
+        </div>
     
         <div class="mb-3">
-            <label for="location" class="form-label">Location</label>
+            <label for="location" class="form-label">City</label>
             <input name="listing[location]" value="<%=listing.location%>" type="text" class="form-control" required>
-            <div class="invalid-feedback">Location should be valid</div>
+            <div class="invalid-feedback">City should be valid</div>
         </div>
+
 
         <div class="mb-3">
             <label for="category" class="form-label">Category</label>
