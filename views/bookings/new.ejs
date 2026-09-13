@@ -1,0 +1,48 @@
+<% layout("layouts/boilerplate") %>
+<%layout("/layouts/boilerplate.ejs")%>
+
+<link rel="stylesheet" href="/css/booking.css">
+<div class="booking-page">
+    <div class="booking-hero" style="background-image: url('<%= listing.image.url %>');">
+        <div class="booking-hero-overlay"></div>
+    </div>
+
+    <div class="booking-glass-card">
+        <h2 class="booking-title"><%= listing.title %></h2>
+        <p class="booking-location"><%= listing.location %>, <%= listing.country %></p>
+        <p class="booking-price"><span>₹<%= listing.price %></span> / night</p>
+
+        <form action="/listings/<%= listing._id %>/book" method="POST" class="booking-form" id="bookingForm">
+            <div class="date-group">
+                <div class="date-field">
+                    <label for="checkIn">Check-in</label>
+                    <input type="date" id="checkIn" name="booking[checkIn]" required>
+                </div>
+                <div class="date-divider">
+                    <i class="fa-solid fa-arrow-right-long"></i>
+                </div>
+                <div class="date-field">
+                    <label for="checkOut">Check-out</label>
+                    <input type="date" id="checkOut" name="booking[checkOut]" required>
+                </div>
+            </div>
+
+            <div class="price-breakdown" id="priceBreakdown">
+                <div class="price-row">
+                    <span id="nightsLabel">Select dates to see total</span>
+                    <span id="totalPrice"></span>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-book-now">
+                Confirm Booking
+                <i class="fa-solid fa-arrow-right"></i>
+            </button>
+        </form>
+    </div>
+</div>
+
+<!-- data-price passes server-rendered EJS data to the external JS file, which has no access to <%= %> itself -->
+<div id="bookingData" data-price="<%= listing.price %>" style="display: none;"></div>
+
+<script src="/js/booking.js"></script>

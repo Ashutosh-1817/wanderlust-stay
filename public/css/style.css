@@ -198,3 +198,37 @@ body {
 .btn-directions i {
     color: #fe424d;
 }
+
+.btn-book-listing {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.7rem 1.4rem;
+    margin-top: 0.5rem;
+    border: none;
+    border-radius: 0.8rem;
+    background: #fe424d;
+    color: #ffffff;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 600;
+    font-size: 0.95rem;
+    text-decoration: none;
+    transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.3s ease, background 0.3s ease;
+}
+
+.btn-book-listing:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 22px rgba(254, 66, 77, 0.35);
+    background: #e63a44;
+    color: #ffffff;
+    text-decoration: none;
+}
+
+.btn-book-listing i {
+    transition: transform 0.25s ease;
+}
+
+.btn-book-listing:hover i {
+    transform: translateX(3px);
+}

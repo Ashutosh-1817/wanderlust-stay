@@ -24,6 +24,7 @@ const User = require("./models/user.js");
 const listingRouter = require("./routes/lists.js");
 const reviewRouter = require("./routes/reviews.js");
 const usersRouter = require("./routes/users.js");
+const bookingRoutes = require('./routes/bookings.js');
 
 
 main().then(() => {
@@ -95,6 +96,7 @@ app.use("/listings" , listingRouter);
 app.use("/listings/:id/reviews", reviewRouter);
 app.use("/", usersRouter);
 
+app.use("/", bookingRoutes);
 
 app.all("*",(req,res,next) =>{
     next(new ExpressError(404,"Page not found"));

@@ -23,6 +23,10 @@
                 <p class="listing-address"><i class="fa-solid fa-location-dot"></i> <%= listing.address %></p>
                 <p class="card-text"></p><%=listing.location%> <br></p>
                 <p class="card-text"></p><%=listing.country%></p>
+
+                <a href="/listings/<%= listing._id %>/book" class="btn-book-listing">
+                    Book Now <i class="fa-solid fa-arrow-right"></i>
+                </a>
             </div>
         </div>
         <br>
