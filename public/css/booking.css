@@ -164,3 +164,227 @@
         padding: 1.5rem;
     }
 }
+
+
+.my-bookings-page {
+    max-width: 800px;
+    margin: 3rem auto;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    padding: 0 1rem;
+}
+
+.my-bookings-title {
+    font-weight: 700;
+    color: #222222;
+    margin-bottom: 2rem;
+}
+
+/* Empty state */
+.empty-bookings {
+    text-align: center;
+    padding: 4rem 1rem;
+    color: #6b6b6b;
+}
+
+.empty-bookings i {
+    font-size: 2.5rem;
+    color: #dfe4e6;
+    margin-bottom: 1rem;
+    display: block;
+}
+
+.empty-bookings p {
+    margin-bottom: 1.5rem;
+}
+
+.empty-bookings .btn-book-listing {
+    display: inline-flex;
+}
+
+/* Booking cards */
+.bookings-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.booking-card {
+    display: flex;
+    gap: 1.25rem;
+    padding: 1rem;
+    background: #ffffff;
+    border: 1px solid #dfe4e6;
+    border-radius: 0.8rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.3s ease;
+}
+
+.booking-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.1);
+}
+
+.booking-card-img {
+    width: 140px;
+    height: 140px;
+    object-fit: cover;
+    border-radius: 0.6rem;
+    flex-shrink: 0;
+}
+
+.booking-card-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0; /* prevents flex overflow issues with long titles */
+}
+
+.booking-card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 0.75rem;
+}
+
+.booking-card-top h5 {
+    font-weight: 700;
+    color: #222222;
+    margin: 0;
+}
+
+.booking-card-location {
+    color: #6b6b6b;
+    font-size: 0.85rem;
+    margin: 0.3rem 0 0.75rem;
+}
+
+.booking-card-location i {
+    color: #fe424d;
+    margin-right: 0.3rem;
+}
+
+/* Status badges — soft/muted backgrounds, saturated text, not harsh solid colors */
+.status-badge {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    padding: 0.3rem 0.7rem;
+    border-radius: 2rem;
+    white-space: nowrap;
+}
+
+.status-pending {
+    background: #fff4e0;
+    color: #b8752a;
+}
+
+.status-confirmed {
+    background: #e5f7ec;
+    color: #1f9d55;
+}
+
+.status-cancelled {
+    background: #f2f2f2;
+    color: #8a8a8a;
+}
+
+.booking-card-dates {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem 0;
+    border-top: 1px solid #f0f0f0;
+    border-bottom: 1px solid #f0f0f0;
+    margin-bottom: 0.75rem;
+}
+
+.booking-card-dates i {
+    color: #c4c4c4;
+    font-size: 0.8rem;
+}
+
+.date-label {
+    display: block;
+    font-size: 0.7rem;
+    color: #999;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.date-value {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #222222;
+}
+
+.booking-card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: auto;
+}
+
+.booking-total {
+    font-weight: 700;
+    color: #fe424d;
+    font-size: 1.05rem;
+}
+
+.view-listing-link {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #222222;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    transition: color 0.25s ease;
+}
+
+.view-listing-link:hover {
+    color: #fe424d;
+}
+
+.view-listing-link i {
+    font-size: 0.7rem;
+}
+
+/* Responsive — stack image above content on small screens */
+@media (max-width: 576px) {
+    .booking-card {
+        flex-direction: column;
+    }
+
+    .booking-card-img {
+        width: 100%;
+        height: 180px;
+    }
+}
+
+
+
+.btn-cancel-booking {
+    padding: 0.4rem 0.9rem;
+    border: 1px solid #dfe4e6;
+    border-radius: 0.6rem;
+    background: transparent;
+    color: #6b6b6b;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: border-color 0.25s ease, color 0.25s ease;
+}
+
+.btn-cancel-booking:hover {
+    border-color: #fe424d;
+    color: #fe424d;
+}
+
+
+.booking-card-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+}

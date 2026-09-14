@@ -1,0 +1,56 @@
+<%layout("/layouts/boilerplate.ejs")%>
+<link rel="stylesheet" href="/css/booking.css">
+
+<div class="my-bookings-page">
+    <h2 class="my-bookings-title">My Bookings</h2>
+
+    <% if (bookings.length === 0) { %>
+        <div class="empty-bookings">
+            <i class="fa-regular fa-calendar-xmark"></i>
+            <p>You haven't booked anything yet.</p>
+            <a href="/listings" class="btn-book-listing">Browse Listings <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+    <% } else { %>
+        <div class="bookings-list">
+            <% bookings.forEach(booking => { %>
+                <div class="booking-card">
+                    <img src="<%= booking.listing.image.url %>" alt="<%= booking.listing.title %>" class="booking-card-img">
+
+                    <div class="booking-card-body">
+                        <div class="booking-card-top">
+                            <h5><%= booking.listing.title %></h5>
+                            <span class="status-badge status-<%= booking.status %>"><%= booking.status %></span>
+                        </div>
+
+                        <p class="booking-card-location">
+                            <i class="fa-solid fa-location-dot"></i>
+                            <%= booking.listing.location %>, <%= booking.listing.country %>
+                        </p>
+
+                        <div class="booking-card-dates">
+                            <div>
+                                <span class="date-label">Check-in</span>
+                                <span class="date-value"><%= new Date(booking.checkIn).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) %></span>
+                            </div>
+                            <i class="fa-solid fa-arrow-right-long"></i>
+                            <div>
+                                <span class="date-label">Check-out</span>
+                                <span class="date-value"><%= new Date(booking.checkOut).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) %></span>
+                            </div>
+                        </div>
+
+                        <div class="booking-card-footer">
+                            <span class="booking-total">₹<%= booking.totalPrice %></span>
+                            <a href="/listings/<%= booking.listing._id %>" class="view-listing-link">View Listing <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+                                <% if (booking.status !== 'cancelled') { %>
+                                    <form action="/bookings/<%= booking._id %>/cancel" method="POST" class="cancel-form">
+                                        <button type="submit" class="btn-cancel-booking" onclick="return confirm('Cancel this booking?')">Cancel</button>
+                                    </form>
+                                <% } %>
+                        </div>
+                    </div>
+                </div>
+            <% }) %>
+        </div>
+    <% } %>
+</div>

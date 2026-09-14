@@ -3,7 +3,7 @@ const Review = require("./models/review");
 const {listingSchema} = require("./schema.js");
 const ExpressError = require("./utils/ExpressError.js");
 const {reviewSchema} =require("./schema.js")
-
+const Booking = require('./models/booking.js');
 
 
 module.exports.isLoggedIn = (req,res,next) =>{
@@ -65,6 +65,22 @@ module.exports.isReviewAuthor = async (req,res,next) =>{
     next();
 }
 
+
+module.exports.isBookingOwner = async (req, res, next) => {
+    const { bookingId } = req.params;
+    const booking = await Booking.findById(bookingId);
+
+    if (!booking) {
+        req.flash('error', 'Booking not found');
+        return res.redirect('/bookings');
+    }
+
+    if (!booking.user.equals(req.user._id)) {
+        req.flash('error', 'You do not have permission to do that');
+        return res.redirect('/bookings');
+    }
+    next();
+};
 
 
   // module.exports.isReviwerAuthor =  async(req , res , next) =>{

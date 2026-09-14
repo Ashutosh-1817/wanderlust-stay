@@ -7,6 +7,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const pricePerNight = Number(document.getElementById('bookingData').dataset.price);
 
+
+    const today = new Date().toISOString().split('T')[0];
+    checkIn.setAttribute('min',today);
+
+    checkIn.addEventListener('change',() =>{
+        const nextDay = new Date(checkIn.value);
+        nextDay.setDate(nextDay.getDate()+1);
+        checkOut.setAttribute('min',nextDay.toISOString().split('T')[0]);
+
+
+        if(checkOut.value && checkIn.value <= checkIn.value){
+            checkOut.value = '';
+        }
+
+        updatePrice();
+    });
+
+
+
     function updatePrice() {
         if (checkIn.value && checkOut.value) {
             const nights = Math.round((new Date(checkOut.value) - new Date(checkIn.value)) / (1000 * 60 * 60 * 24));
