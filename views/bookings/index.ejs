@@ -4,11 +4,23 @@
 <div class="my-bookings-page">
     <h2 class="my-bookings-title">My Bookings</h2>
 
+    <div class="booking-filters">
+        <a href="/bookings" class="filter-tab <%= activeFilter === 'all' ? 'active' : '' %>">All</a>
+        <a href="/bookings?status=pending" class="filter-tab <%= activeFilter === 'pending' ? 'active' : '' %>">Pending</a>
+        <a href="/bookings?status=confirmed" class="filter-tab <%= activeFilter === 'confirmed' ? 'active' : '' %>">Confirmed</a>
+        <a href="/bookings?status=cancelled" class="filter-tab <%= activeFilter === 'cancelled' ? 'active' : '' %>">Cancelled</a>
+    </div>
+
     <% if (bookings.length === 0) { %>
         <div class="empty-bookings">
             <i class="fa-regular fa-calendar-xmark"></i>
-            <p>You haven't booked anything yet.</p>
-            <a href="/listings" class="btn-book-listing">Browse Listings <i class="fa-solid fa-arrow-right"></i></a>
+            <% if (activeFilter === 'all') { %>
+                <p>You haven't booked anything yet.</p>
+                <a href="/listings" class="btn-book-listing">Browse Listings <i class="fa-solid fa-arrow-right"></i></a>
+            <% } else { %>
+                <p>No <%= activeFilter %> bookings.</p>
+                <a href="/bookings" class="btn-book-listing">View All Bookings <i class="fa-solid fa-arrow-right"></i></a>
+            <% } %>
         </div>
     <% } else { %>
         <div class="bookings-list">
@@ -40,13 +52,19 @@
                         </div>
 
                         <div class="booking-card-footer">
-                            <span class="booking-total">₹<%= booking.totalPrice %></span>
-                            <a href="/listings/<%= booking.listing._id %>" class="view-listing-link">View Listing <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+                            <span class="booking-total">$<%= booking.totalPrice %></span>
+
+                            <div class="booking-card-actions">
+                                <a href="/listings/<%= booking.listing._id %>" class="view-listing-link">
+                                    View Listing <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                                </a>
+
                                 <% if (booking.status !== 'cancelled') { %>
                                     <form action="/bookings/<%= booking._id %>/cancel" method="POST" class="cancel-form">
                                         <button type="submit" class="btn-cancel-booking" onclick="return confirm('Cancel this booking?')">Cancel</button>
                                     </form>
                                 <% } %>
+                            </div>
                         </div>
                     </div>
                 </div>

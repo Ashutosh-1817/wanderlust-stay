@@ -388,3 +388,33 @@
     align-items: center;
     gap: 0.9rem;
 }
+
+
+.booking-filters {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid #dfe4e6;
+    padding-bottom: 0.75rem;
+}
+
+.filter-tab {
+    padding: 0.4rem 1rem;
+    border-radius: 2rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #6b6b6b;
+    text-decoration: none;
+    transition: background 0.25s ease, color 0.25s ease;
+}
+
+.filter-tab:hover {
+    background: #f9f9f9;
+    color: #222222;
+    text-decoration: none;
+}
+
+.filter-tab.active {
+    background: #fe424d;
+    color: #ffffff;
+}

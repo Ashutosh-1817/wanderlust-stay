@@ -65,13 +65,21 @@ module.exports.cancelBooking = async (req, res) => {
     booking.status = 'cancelled';
     await booking.save();
     req.flash('success', 'Booking cancelled.');
-    req.session.save(() => res.redirect('/bookings')); // using the session.save() fix, same reasoning as before
+    req.session.save(() => res.redirect('/bookings')); 
 };
 
-module.exports.myBookings = async(req,res) =>{
-    const bookings = await Booking.find({user: req.user._id})
-    .populate('listing')
-    .sort({createdAt: -1});
+module.exports.myBookings = async (req, res) => {
+    const filter = req.query.status; 
+    const query = { user: req.user._id };
 
-    res.render('bookings/index.ejs',{bookings});
+
+    if (filter && ['pending', 'confirmed', 'cancelled'].includes(filter)) {
+        query.status = filter; 
+    }
+
+    const bookings = await Booking.find(query)
+        .populate('listing')
+        .sort({ createdAt: -1 });
+
+    res.render('bookings/index.ejs', { bookings, activeFilter: filter || 'all' });
 };
